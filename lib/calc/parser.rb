@@ -1,4 +1,4 @@
-# /Users/casiano/Dropbox/src/PL/simple_rec_descent_parser
+ # /Users/casiano/Dropbox/src/PL/simple_rec_descent_parser
 
 module Calc
   module Tokens
@@ -80,8 +80,8 @@ module Calc
     end
 
     # Operator '=' is right associative
-    def assignment     # assignment --> expression '=' assignment | expression
-      val = expression
+    def assignment     # assignment --> comparison '=' assignment | comparison
+      val = comparison
       if (current_token.value == '=') 
         raise SyntaxError, "Error. Expected left-value, found #{val}" unless  val =~ /^[a-z_A-Z]\w*$/
         next_token
@@ -89,6 +89,9 @@ module Calc
       else
         val
       end
+    end
+    
+    def comparison  # comparison --> comparison /^<|>|<=|>=|==|!=$/ expression | expression
     end
 
     def expression   # expression --> expresion /^[+-]$/ term | term
