@@ -13,7 +13,7 @@ The translator conforms to the recursive predictive descendant technique.
 assignment   : comparison '=' assignment
              | comparison
 ;
-comparison   : comparison COMOP expression
+comparison   : expression COMOP expression
 	     | expression
 ;
 expression   : expression ADDOP term
