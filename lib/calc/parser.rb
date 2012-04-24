@@ -2,18 +2,20 @@
 
 module Calc
   module Tokens
-    OPERATOR   = 0
-    NUMBER     = 1
-    ID         = 2
-    UNEXPECTED = 3
-    EOI        = 4
+    COMOP      = 0
+    OPERATOR   = 1
+    NUMBER     = 2
+    ID         = 3
+    UNEXPECTED = 4
+    EOI        = 5
 
     NAME = {
-      0 => :OPERATOR,   
-      1 => :NUMBER,    
-      2 => :ID,        
-      3 => :UNEXPECTED,
-      4 => :EOI,
+      0 => :COMOP,
+      1 => :OPERATOR,   
+      2 => :NUMBER,    
+      3 => :ID,        
+      4 => :UNEXPECTED,
+      5 => :EOI,
     }
   end
 
@@ -38,7 +40,8 @@ module Calc
       @input = input                 
 
       @regexp = %r{
-           ([-+*/()=;])              # OPERATOR 
+	   (<=|>=|==|!=|<|>)	     # COMPARE
+         | ([-+*/()=;])              # OPERATOR 
          | (\d+)                     # NUMBER
          | ([a-zA-Z_]\w*)            # ID 
          |(\S)                       # UNEXPECTED
@@ -91,7 +94,15 @@ module Calc
       end
     end
     
-    def comparison  # comparison --> comparison /^<|>|<=|>=|==|!=$/ expression | expression
+    def comparison  # comparison --> expression /^<|>|<=|>=|==|!=$/ expression | expression
+      exp = expression 
+      lookahead, sem = current_token.token, current_token.value
+      if lookahead == COMOP then
+	 next_token
+	 exp2 = expression
+	 exp += " #{exp2} #{sem}"
+      end
+      exp
     end
 
     def expression   # expression --> expresion /^[+-]$/ term | term
